@@ -102,17 +102,15 @@ for i in range(len(line_counts)):
         #print(j)
     #print(cluster_data)
 
-    count_quals = []        
+    temp = []        
     for k in cluster_data:
-    	#print(k)
-    	temp = k.split()
-    	#print(temp[11])
-	count_quals.append(temp[11])
-	count_quals.append(temp[12])
-	#print(count_quals)
-	
-   	#print(type(count_quals[0]))
-
+    	k = k.split()
+        temp.append([int(k[11]),float(k[12])])
+    count_quals = list(zip(*temp))
+    print("Count quals:")
+    print(type(count_quals[0]))
+    print(count_quals[0])
+    
     while(count_quals[0] ==1):
         if counts_quals[1,0] < 20 or cluster_data[0,8].find('NNNNNNNNNN') > 0:
             filtertest[7]+=1
@@ -123,11 +121,16 @@ for i in range(len(line_counts)):
         else:
             filtertest[9]+=1
             outf2.write('\t'.join(cluster_data[0][:13])+'\n')
+    
     while(count_quals[0] != 1):
         trim = False
         top_3 = heapq.nlargest(3,count_quals[0])
-        count_quals = [int(i) for i in count_quals]
-        if (top_3[0]/sum(counts_quals[0])) > 0.80:
+        #print("Top 3:")
+        #print(top_3[0])
+        #print(type(count_quals[0]))
+        #print(type(top_3[0]))
+        
+        if (top_3[0]/(sum(count_quals[0][0:]))) > 0.80:
             if ((top_3[0] > 29 and top_3[1])< 3):
                 filtertest[0]+=1
                 for k in cluster_data:
@@ -142,7 +145,7 @@ for i in range(len(line_counts)):
                         outf1.write('\t'.join(k)+'\n')
                     else:
                         outf2.write('\t'.join(k[:13])+'\n')
-        while(sum(top_3[:2])/sum(counts_quals[0]) > 0.80 and len(top_3) > 2):
+        if sum(top_3[:2])/sum(count_quals[0][0:]) > 0.80 and len(top_3) > 2:
             if sum(top_3[:2]) > 29 and top_3[2] < 3 and top_3[0]/top_3[1] < 1.6:
                 filtertest[2]+=1
                 for k in cluster_data:
